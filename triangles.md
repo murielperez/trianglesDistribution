@@ -1,19 +1,7 @@
 Distribution of the Number of Triangles in an Erdös-Rényi RG
 ============================================================
 
-Here's some code
+There is a nice R package to work with graphs called
+[igraph](http://igraph.org/)
 
     library(igraph)
-
-    ## 
-    ## Attaching package: 'igraph'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     decompose, spectrum
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     union
-
-    library(ggplot2)

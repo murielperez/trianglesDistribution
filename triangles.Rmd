@@ -7,12 +7,12 @@ variant: markdown_github
 ---
 #Distribution of the Number of Triangles in an Erdös-Rényi RG
 
-Here's some code
+There is a nice R package to work with graphs called [igraph](http://igraph.org/)
 
-```{r}
+```{r message = FALSE}
 library(igraph)
-library(ggplot2)
 ```
+
 
 
 		
