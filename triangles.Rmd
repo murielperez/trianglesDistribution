@@ -1,14 +1,20 @@
 ---
-title: "Distribution of the Number of Triangles"
+title: "Distribution of the Number of Triangles in an Erdös-Rényi RG"
 author: Muriel Pérez
 date: November 3, 2016
 output: md_document
 variant: markdown_github 
 ---
-#Hola mundo
+#Distribution of the Number of Triangles in an Erdös-Rényi RG
+
+Here's some code
+
+```{r}
+library(igraph)
+library(ggplot2)
+```
+
 
 		
-
-
 
 	
