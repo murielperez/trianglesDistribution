@@ -15,7 +15,7 @@ library(igraph)
 ```
 
 igraph is a collection of network analysis tools. It comes with useful
-functions to easily generate random $ER(n,p=\frac{\lambda}{n})$ graphs,
+functions to easily generate random $ER(n,p=\lambda/n)$ graphs,
 plot them, and count the number of triangles, which is what we
 need. Let's generate a graph with $n = 100$ $\lambda = 3$,
 

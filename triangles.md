@@ -7,13 +7,13 @@ There is a nice R package to work with graphs called
     library(igraph)
 
 igraph is a collection of network analysis tools. It comes with useful
-functions to easily generate random $ER(n,p=\\frac{\\lambda}{n})$
-graphs, plot them, and count the number of triangles, which is what we
-need. Let's generate a graph with *n* = 100 *λ* = 3,
+functions to easily generate random *E**R*(*n*, *p* = *λ*/*n*) graphs,
+plot them, and count the number of triangles, which is what we need.
+Let's generate a graph with *n* = 100 *λ* = 3,
 
     rg <- sample_gnp(n = 100, p = 3/100)
     count_triangles(rg)
 
-    ##   [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1
-    ##  [36] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-    ##  [71] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    ##   [1] 0 0 1 1 0 0 0 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+    ##  [36] 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0
+    ##  [71] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
