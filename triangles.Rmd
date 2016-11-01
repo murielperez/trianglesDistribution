@@ -1,0 +1,14 @@
+---
+title: "Distribution of the Number of Triangles"
+author: Muriel Pérez
+date: November 3, 2016
+output: md_document
+variant: markdown_github 
+---
+#Hola mundo
+
+		
+
+
+
+	
