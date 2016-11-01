@@ -1,2 +1,2 @@
 # trianglesDistribution
-Distribution of the numbe of triangles for an Erdös-Rényi random graph.
+Distribution of the number of triangles for an Erdös-Rényi random graph.
