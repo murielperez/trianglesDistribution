@@ -7,10 +7,21 @@ variant: markdown_github
 ---
 #Distribution of the Number of Triangles in an Erdös-Rényi RG
 
-There is a nice R package to work with graphs called [igraph](http://igraph.org/)
+There is a nice R package to work with graphs called
+[igraph](http://igraph.org/). 
 
 ```{r message = FALSE}
 library(igraph)
+```
+
+igraph is a collection of network analysis tools. It comes with useful
+functions to easily generate random $ER(n,p=\frac{\lambda}{n})$ graphs,
+plot them, and count the number of triangles, which is what we
+need. Let's generate a graph with $n = 100$ $\lambda = 3$,
+
+```{r}
+rg <- sample_gnp(n = 100, p = 3/100)
+count_triangles(rg)
 ```
 
 
