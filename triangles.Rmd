@@ -3,29 +3,136 @@ title: "Distribution of the Number of Triangles in an Erdös-Rényi RG"
 author: Muriel Pérez
 date: November 3, 2016
 output: md_document
-variant: markdown_github 
+variant: markdown_github
 ---
+
+output:  pdf_document
+ 
+
 #Distribution of the Number of Triangles in an Erdös-Rényi RG
 
-There is a nice R package to work with graphs called
-[igraph](http://igraph.org/). 
+Here I investigate numericaly the limiting distribution of the number
+of triangles in a $ER(n,p=\lambda/n)$ graph. I want to confirm that as
+the number of nodes $n\to \infty$, the number of triangles
+$\Delta_n\to Pois(\lambda^3/6)$ in distribution.
 
-```{r message = FALSE}
+First, I show the R package that I used, igraph.
+
+
+## igraph
+
+There is a nice R package to work with graphs called
+[igraph](http://igraph.org/).
+
+```{r, message = FALSE}
 library(igraph)
 ```
+```{r, echo = FALSE, message = FALSE}
+library(dplyr)
+library(purrr)
+library(tidyr)
+library(ggplot2)
+```
 
-igraph is a collection of network analysis tools. It comes with useful
-functions to easily generate random $ER(n,p=\lambda/n)$ graphs,
-plot them, and count the number of triangles, which is what we
-need. Let's generate a graph with $n = 100$ $\lambda = 3$,
+igraph is a collection of network analysis tools. Among them, there
+are functions to easily sample $ER(n,p=\lambda/n)$ graphs, plot them,
+and count the number of triangles, which is what we need. Let's
+generate a graph with $n = 100$, $\lambda = 3$, and count the triangles
+with the function count_triangles, which returns how many triangles
+each vertex is part of.
 
 ```{r}
+set.seed(2016)
 rg <- sample_gnp(n = 100, p = 3/100)
-count_triangles(rg)
+count_triangles(rg) %>%
+    sum/3
+```
+
+we can also plot rg (See Figure 1).
+
+```{r, fig.cap = "A realization of $ER(n = 100,p=3/100)$"}
+plot(rg, vertex.label = NA, vertex.size = 2)
 ```
 
 
+## Random sample from $ER(n,p=\lambda/n)$
 
-		
+Now, we want to confirm that as the number of nodes $n\to \infty$, the
+number of triangles $\Delta_n\to Poiss(\lambda^3/6)$ in
+distribution. For that, I generate a random sample of $N=10000$ random
+graphs for $\lambda = 0.1, 1, 2, 5$, and $n = 100, 200, 500, 1000,
+5000$, and then analyze the empirical distribution of $\Delta_{n}$ in
+each case.
 
-	
+
+```{r echo = FALSE}
+generateData <- function(n, lambda, reps){
+    reps %>%
+        rerun(sample_gnp(n, lambda/n) %>%
+              count_triangles %>%
+              sum/3) %>%
+        unlist
+}
+
+calculateFreqs <- function(data, lambda){
+    data %>%
+        table(dnn = "value") %>%
+        as_data_frame %>%
+        rename(freq = n) %>%
+        mutate(freq = freq/sum(freq),
+               value = as.integer(value),
+               expected = dpois(value, lambda^3/6))
+}
+
+performChisq <- function(data, pois.parameter){
+    levs <- data %>%
+        factor %>%
+        levels %>%
+        as.integer
+    probs <- dpois(levs, pois.parameter)
+    test <- chisq.test(c(table(data),0), p = c(probs, 1-sum(probs)), simulate.p = TRUE)
+    return(data_frame(p.value = test$p.value, chisq = test$statistic))
+}
+
+lambda <- 2
+n <- c(100, 200, 500, 1000, 2000)
+reps <- 100
+
+set.seed(2016)
+df <- expand.grid(lambda = lambda, n = n) %>%
+    as_data_frame %>%
+    mutate(reps = reps) %>%
+    mutate(data  = pmap(list(n, lambda, reps), generateData),
+           freqs = map2(data, lambda, calculateFreqs),
+           test  = map2(data, lambda^3/6, performChisq)) %>%
+    unnest(test)
+
+```
+
+We can compare the empirical distribution with the theoretical
+probability mass function.
+
+```{r, echo = FALSE, fig.cap = "Observed frequency distribution and expected Poisson distribution"}
+## Bar diagrams
+df %>%
+    filter(n %in% c(100, 1000)) %>%
+    mutate(n = factor(n)) %>%
+    unnest(freqs) %>%
+    select(value, freq, expected, n) %>%
+    gather(type, p, -c(value,n)) %>%
+    ggplot(aes(x = value, y = p)) + geom_bar(aes(fill = type), stat = "identity", position = "dodge") + facet_grid(.~n)
+```	
+
+The qqplots look like this, but they are not very promising
+
+```{r, echo = FALSE, fig.cap = "QQ-plots of the sample versus the Poisson distribution quantiles"}
+df %>%
+    filter(n %in% c(100, 500, 2000)) %>%
+    ##filter(n==2000) %>%
+    unnest(data) %>%
+    mutate(data = as.integer(data)) %>%
+    ggplot(aes(sample = data)) +
+    stat_qq(distribution = qpois, dparams = list(lambda = 2^3/6)) +
+    geom_abline(slope = 1, intercept = 0) +
+    facet_grid(.~n)
+```
